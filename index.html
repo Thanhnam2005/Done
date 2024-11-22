@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageToPDF - Chuyển đổi ảnh sang PDF miễn phí</title>
+    <title>ThanhNam2005</title>
     <!-- Load required libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
@@ -100,7 +100,7 @@
     <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-6 animate-fadeIn">
         <nav class="container mx-auto px-4">
             <div class="flex justify-between items-center">
-                <a href="/" class="text-3xl font-bold tracking-tight">ImageToPDF</a>
+                <a href="/" class="text-3xl font-bold tracking-tight">JPG TO PDF</a>
                 <ul class="flex space-x-6">
                     <li><a href="#" class="hover:text-blue-200 transition-colors">Trang chủ</a></li>
                     <li><a href="#contact" class="hover:text-blue-200 transition-colors">Liên hệ</a></li>
@@ -136,11 +136,13 @@
 
         <section id="contact" class="py-20 bg-gray-100">
             <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl font-bold mb-8 animate-slideInFromBottom">Liên hệ với chúng tôi</h2>
-                <p class="text-xl mb-8 animate-slideInFromBottom" style="animation-delay: 0.2s;">Có câu hỏi hoặc góp ý? Chúng tôi luôn sẵn sàng hỗ trợ bạn!</p>
-                <a href="mailto:support@imagetopdf.com" 
+                <h2 class="text-3xl font-bold mb-8 animate-slideInFromBottom">Liên hệ với tôi</h2>
+                <p class="text-xl mb-8 animate-slideInFromBottom" style="animation-delay: 0.2s;">
+                    Hãy ghé thăm và liên hệ với tôi qua Facebook!
+                </p>
+                <a href="https://www.facebook.com/tnamtricklo205" target="_blank" 
                    class="inline-block bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors animate-slideInFromBottom" style="animation-delay: 0.4s;">
-                    Gửi email cho chúng tôi
+                    Liên hệ qua Facebook
                 </a>
             </div>
         </section>
@@ -148,84 +150,13 @@
 
     <footer class="bg-gray-800 text-white py-8 animate-fadeIn">
         <div class="container mx-auto px-4 text-center">
-            <p>&copy; 2023 ImageToPDF. Bảo lưu mọi quyền.</p>
-            <p class="mt-2 text-gray-400">Được phát triển với ❤️ bởi đội ngũ ImageToPDF</p>
+            <p>&copy; ImageToPDF.</p>
+            <p class="mt-2 text-gray-400">Được phát triển bỏi Thanh Nam</p>
         </div>
     </footer>
 
     <div id="successNotification" class="animate-slideInFromTop">
         Chuyển đổi thành công!
     </div>
-
-    <script>
-        // Ensure jsPDF is available globally
-        window.jsPDF = window.jspdf.jsPDF;
-        
-        // Initialize Dropzone
-        Dropzone.autoDiscover = false;
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const convertBtn = document.getElementById('convertBtn');
-            const pdfDownload = document.getElementById('pdfDownload');
-            const downloadLink = document.getElementById('downloadLink');
-            const successNotification = document.getElementById('successNotification');
-
-            let myDropzone = new Dropzone("#upload-form", {
-                url: "#",
-                autoProcessQueue: false,
-                addRemoveLinks: true,
-                acceptedFiles: "image/*",
-                dictRemoveFile: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>',
-                init: function() {
-                    this.on("addedfile", function(file) {
-                        convertBtn.classList.remove('hidden');
-                        file.previewElement.classList.add('animate-fadeIn');
-                    });
-                    this.on("removedfile", function() {
-                        if (this.files.length === 0) {
-                            convertBtn.classList.add('hidden');
-                            pdfDownload.classList.add('hidden');
-                        }
-                    });
-                }
-            });
-
-            convertBtn.addEventListener('click', async function() {
-                if (myDropzone.files.length > 0) {
-                    const pdf = new jsPDF();
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = pdf.internal.pageSize.getHeight();
-
-                    for (let i = 0; i < myDropzone.files.length; i++) {
-                        if (i > 0) {
-                            pdf.addPage();
-                        }
-
-                        const file = myDropzone.files[i];
-                        const imgData = await new Promise((resolve) => {
-                            const reader = new FileReader();
-                            reader.onload = (e) => resolve(e.target.result);
-                            reader.readAsDataURL(file);
-                        });
-
-                        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-                    }
-
-                    const pdfBlob = pdf.output('blob');
-                    const pdfUrl = URL.createObjectURL(pdfBlob);
-                    downloadLink.href = pdfUrl;
-                    pdfDownload.classList.remove('hidden');
-                    pdfDownload.classList.add('animate-fadeIn');
-
-                    // Show success notification
-                    successNotification.style.display = 'block';
-                    setTimeout(() => {
-                        successNotification.style.display = 'none';
-                    }, 3000);
-                }
-            });
-        });
-    </script>
 </body>
 </html>
-
