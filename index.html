@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
+        /* CSS giữ nguyên */
         .dropzone {
             border: 2px dashed #4A90E2;
             border-radius: 5px;
@@ -35,9 +36,6 @@
             vertical-align: top;
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
-        .dz-preview:hover {
-            transform: scale(1.05);
-        }
         .dz-remove {
             position: absolute;
             top: -10px;
@@ -54,45 +52,12 @@
             justify-content: center;
             transition: background-color 0.3s ease;
         }
-        .dz-remove:hover {
-            background-color: #DC2626;
-        }
-        .dz-remove svg {
-            width: 14px;
-            height: 14px;
-        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        @keyframes slideInFromBottom {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes slideInFromTop {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
         .animate-fadeIn {
             animation: fadeIn 0.5s ease-in-out;
-        }
-        .animate-slideInFromBottom {
-            animation: slideInFromBottom 0.5s ease-out;
-        }
-        .animate-slideInFromTop {
-            animation: slideInFromTop 0.5s ease-out;
-        }
-        #successNotification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #10B981;
-            color: white;
-            padding: 16px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            display: none;
         }
     </style>
 </head>
@@ -112,9 +77,9 @@
     <main>
         <section class="py-20 bg-gradient-to-b from-blue-600 to-blue-800 text-white">
             <div class="container mx-auto px-4 text-center">
-                <h1 class="text-5xl font-bold mb-6 animate-slideInFromBottom">Chuyển đổi ảnh sang PDF dễ dàng</h1>
-                <p class="text-xl mb-12 animate-slideInFromBottom" style="animation-delay: 0.2s;">Công cụ trực tuyến miễn phí, nhanh chóng và an toàn</p>
-                <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 animate-slideInFromBottom" style="animation-delay: 0.4s;">
+                <h1 class="text-5xl font-bold mb-6 animate-fadeIn">Chuyển đổi ảnh sang PDF dễ dàng</h1>
+                <p class="text-xl mb-12 animate-fadeIn">Công cụ trực tuyến miễn phí, nhanh chóng và an toàn</p>
+                <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 animate-fadeIn">
                     <form id="upload-form" class="dropzone" action="#">
                         <div class="dz-message">
                             Kéo và thả các ảnh vào đây, hoặc nhấp để chọn tệp
@@ -136,12 +101,10 @@
 
         <section id="contact" class="py-20 bg-gray-100">
             <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl font-bold mb-8 animate-slideInFromBottom">Liên hệ với tôi</h2>
-                <p class="text-xl mb-8 animate-slideInFromBottom" style="animation-delay: 0.2s;">
-                    Hãy ghé thăm và liên hệ với tôi qua Facebook!
-                </p>
-                <a href="https://www.facebook.com/tnamtricklo205" target="_blank" 
-                   class="inline-block bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors animate-slideInFromBottom" style="animation-delay: 0.4s;">
+                <h2 class="text-3xl font-bold mb-8 animate-fadeIn">Liên hệ với tôi</h2>
+                <p class="text-xl mb-8 animate-fadeIn">Hãy ghé thăm và liên hệ với tôi qua Facebook!</p>
+                <a href="https://www.facebook.com/your-profile" target="_blank" 
+                   class="inline-block bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors">
                     Liên hệ qua Facebook
                 </a>
             </div>
@@ -151,12 +114,61 @@
     <footer class="bg-gray-800 text-white py-8 animate-fadeIn">
         <div class="container mx-auto px-4 text-center">
             <p>&copy; ImageToPDF.</p>
-            <p class="mt-2 text-gray-400">Được phát triển bỏi Thanh Nam</p>
+            <p class="mt-2 text-gray-400">Được phát triển bởi Thanh Nam</p>
         </div>
     </footer>
 
-    <div id="successNotification" class="animate-slideInFromTop">
-        Chuyển đổi thành công!
-    </div>
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+        Dropzone.autoDiscover = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const convertBtn = document.getElementById('convertBtn');
+            const pdfDownload = document.getElementById('pdfDownload');
+            const downloadLink = document.getElementById('downloadLink');
+            const myDropzone = new Dropzone("#upload-form", {
+                url: "#",
+                autoProcessQueue: false,
+                addRemoveLinks: true,
+                acceptedFiles: "image/*",
+                init: function() {
+                    this.on("addedfile", () => {
+                        convertBtn.classList.remove('hidden');
+                    });
+                    this.on("removedfile", () => {
+                        if (this.files.length === 0) {
+                            convertBtn.classList.add('hidden');
+                            pdfDownload.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+
+            convertBtn.addEventListener('click', async function() {
+                if (myDropzone.files.length > 0) {
+                    const pdf = new jsPDF();
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                    for (let i = 0; i < myDropzone.files.length; i++) {
+                        const file = myDropzone.files[i];
+                        const imgData = await new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = (e) => resolve(e.target.result);
+                            reader.readAsDataURL(file);
+                        });
+
+                        if (i > 0) pdf.addPage();
+                        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+                    }
+
+                    const pdfBlob = pdf.output('blob');
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    downloadLink.href = pdfUrl;
+                    pdfDownload.classList.remove('hidden');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
