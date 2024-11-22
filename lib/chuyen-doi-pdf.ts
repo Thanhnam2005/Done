@@ -1,4 +1,4 @@
-import { jsPDF } from 'jspdf'
+import jsPDF from 'jspdf'
 
 export async function chuyenDoiAnhSangPdf(danhSachAnh: File[]): Promise<Blob> {
   const pdf = new jsPDF()
