@@ -1,7 +1,9 @@
 'use client'
 
-import ChuyenDoiAnhSangPDF from '@/components/chuyen-doi-anh-sang-pdf'
+import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
+
+const ChuyenDoiAnhSangPDF = dynamic(() => import('@/components/chuyen-doi-anh-sang-pdf'), { ssr: false })
 
 export default function TrangChu() {
   return (
