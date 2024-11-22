@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageToPDF - Chuyển đổi ảnh sang PDF miễn phí</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-6">
+        <nav class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="text-3xl font-bold tracking-tight">ImageToPDF</a>
+                <ul class="flex space-x-6">
+                    <li><a href="#" class="hover:text-blue-200 transition-colors">Trang chủ</a></li>
+                    <li><a href="#contact" class="hover:text-blue-200 transition-colors">Liên hệ</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="py-20 bg-gradient-to-b from-blue-600 to-blue-800 text-white">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-5xl font-bold mb-6">Chuyển đổi ảnh sang PDF dễ dàng</h1>
+                <p class="text-xl mb-12">Công cụ trực tuyến miễn phí, nhanh chóng và an toàn</p>
+                <div id="dropzone" class="dropzone bg-white shadow-xl rounded-lg p-8 max-w-2xl mx-auto">
+                    <div class="dz-message text-gray-600">
+                        Kéo và thả các ảnh vào đây, hoặc nhấp để chọn tệp
+                    </div>
+                </div>
+                <button id="convertBtn" class="mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded" style="display: none;">
+                    Chuyển đổi sang PDF
+                </button>
+                <div id="pdfDownload" class="mt-8" style="display: none;">
+                    <h3 class="text-lg font-semibold mb-4">PDF của bạn đã sẵn sàng!</h3>
+                    <a id="downloadLink" href="#" download="anh-da-chuyen-doi.pdf" class="inline-block bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors">
+                        Tải xuống PDF
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-20 bg-gray-100">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold mb-8">Liên hệ với chúng tôi</h2>
+                <p class="text-xl mb-8">Có câu hỏi hoặc góp ý? Chúng tôi luôn sẵn sàng hỗ trợ bạn!</p>
+                <a href="mailto:support@imagetopdf.com" class="inline-block bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors">
+                    Gửi email cho chúng tôi
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2023 ImageToPDF. Bảo lưu mọi quyền.</p>
+            <p class="mt-2 text-gray-400">Được phát triển với ❤️ bởi đội ngũ ImageToPDF</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

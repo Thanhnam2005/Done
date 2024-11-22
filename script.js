@@ -1,78 +1,56 @@
-// Đảm bảo rằng jsPDF đã được tải
-if (typeof jsPDF === 'undefined') {
-  console.error('jsPDF library is not loaded');
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const { jsPDF } = window.jspdf;
+    let myDropzone = new Dropzone("#dropzone", {
+        url: "#",
+        autoProcessQueue: false,
+        addRemoveLinks: true,
+        acceptedFiles: "image/*"
+    });
 
-const dropZone = document.getElementById('drop-zone');
-const fileInput = document.getElementById('file-input');
-const imagePreview = document.getElementById('image-preview');
-const convertBtn = document.getElementById('convert-btn');
-const pdfDownload = document.getElementById('pdf-download');
-const downloadLink = document.getElementById('download-link');
+    const convertBtn = document.getElementById('convertBtn');
+    const pdfDownload = document.getElementById('pdfDownload');
+    const downloadLink = document.getElementById('downloadLink');
 
-let images = [];
+    myDropzone.on("addedfile", function() {
+        convertBtn.style.display = 'inline-block';
+    });
 
-dropZone.addEventListener('click', () => fileInput.click());
+    myDropzone.on("removedfile", function() {
+        if (myDropzone.files.length === 0) {
+            convertBtn.style.display = 'none';
+            pdfDownload.style.display = 'none';
+        }
+    });
 
-dropZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropZone.classList.add('dragover');
-});
+    convertBtn.addEventListener('click', function() {
+        if (myDropzone.files.length > 0) {
+            const pdf = new jsPDF();
+            let pdfWidth = pdf.internal.pageSize.getWidth();
+            let pdfHeight = pdf.internal.pageSize.getHeight();
 
-dropZone.addEventListener('dragleave', () => {
-  dropZone.classList.remove('dragover');
-});
+            const processImages = (index) => {
+                if (index >= myDropzone.files.length) {
+                    const pdfBlob = pdf.output('blob');
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    downloadLink.href = pdfUrl;
+                    pdfDownload.style.display = 'block';
+                    return;
+                }
 
-dropZone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  dropZone.classList.remove('dragover');
-  handleFiles(e.dataTransfer.files);
-});
+                const file = myDropzone.files[index];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (index > 0) {
+                        pdf.addPage();
+                    }
+                    pdf.addImage(e.target.result, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+                    processImages(index + 1);
+                };
+                reader.readAsDataURL(file);
+            };
 
-fileInput.addEventListener('change', (e) => {
-  handleFiles(e.target.files);
-});
-
-function handleFiles(files) {
-  images = [];
-  imagePreview.innerHTML = '';
-  for (let file of files) {
-    if (file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        images.push(e.target.result);
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.className = 'preview-image';
-        imagePreview.appendChild(img);
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-  convertBtn.style.display = 'block';
-}
-
-convertBtn.addEventListener('click', () => {
-  if (images.length === 0) {
-    alert('Vui lòng chọn ít nhất một ảnh');
-    return;
-  }
-
-  const pdf = new jsPDF();
-  let pdfWidth = pdf.internal.pageSize.getWidth();
-  let pdfHeight = pdf.internal.pageSize.getHeight();
-
-  images.forEach((img, index) => {
-    if (index > 0) {
-      pdf.addPage();
-    }
-    pdf.addImage(img, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-  });
-
-  const pdfBlob = pdf.output('blob');
-  const pdfUrl = URL.createObjectURL(pdfBlob);
-  
-  downloadLink.href = pdfUrl;
-  pdfDownload.style.display = 'block';
+            processImages(0);
+        }
+    });
 });
 
