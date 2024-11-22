@@ -3,18 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThanhNam2005 - JPG to PDF with Options</title>
+    <title>ThanhNam2005 - JPG to PDF</title>
+    <!-- Load required libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Previous styles remain unchanged */
+        .dropzone {
+            border: 2px dashed #4A90E2;
+            border-radius: 5px;
+            background: white;
+            min-height: 200px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dropzone:hover {
+            border-color: #2563eb;
+            background: #f8fafc;
+        }
+        .dz-message {
+            font-size: 1.2em;
+            color: #6B7280;
+            text-align: center;
+        }
+        .dz-preview {
+            margin: 10px;
+            position: relative;
+            display: inline-block;
+            vertical-align: top;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .dz-remove {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            z-index: 10;
+            cursor: pointer;
+            background-color: #EF4444;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .dz-remove:hover {
+            background-color: rgb(220, 38, 38);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .animate-fadeOut {
+            animation: fadeOut 0.5s ease-in-out;
+        }
+        #successNotification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #10B981;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+        }
         .option-group {
             background: #f8f9fa;
             border-radius: 8px;
             padding: 15px;
             margin: 10px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .option-label {
             display: block;
@@ -29,6 +102,7 @@
             border-radius: 4px;
             background-color: white;
             margin-bottom: 10px;
+            color: #4a5568;
         }
         .margin-inputs {
             display: grid;
@@ -40,11 +114,33 @@
             border: 1px solid #e2e8f0;
             border-radius: 4px;
             width: 100%;
+            color: #4a5568;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
         }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Header remains unchanged -->
+    <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-6 animate-fadeIn">
+        <nav class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="text-3xl font-bold tracking-tight">JPG TO PDF</a>
+                <ul class="flex space-x-6">
+                    <li><a href="#" class="hover:text-blue-200 transition-colors">Trang chủ</a></li>
+                    <li><a href="#contact" class="hover:text-blue-200 transition-colors">Liên hệ</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
     <main>
         <section class="py-20 bg-gradient-to-b from-blue-600 to-blue-800 text-white">
@@ -84,9 +180,9 @@
                         </div>
 
                         <div class="option-group">
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" id="removeBackground" class="form-checkbox h-5 w-5 text-blue-600">
-                                <span class="ml-2 text-gray-700">Tách nền và ghép nền trắng</span>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="removeBackground">
+                                <span class="text-gray-700">Tách nền và ghép nền trắng</span>
                             </label>
                         </div>
                     </div>
@@ -105,10 +201,24 @@
             </div>
         </section>
 
-        <!-- Contact section remains unchanged -->
+        <section id="contact" class="py-20 bg-gray-100">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold mb-8 animate-fadeIn">Liên hệ với tôi</h2>
+                <p class="text-xl mb-8 animate-fadeIn">Hãy ghé thăm và liên hệ với tôi qua Facebook!</p>
+                <a href="https://www.facebook.com/tnamtricklo205" target="_blank" 
+                   class="inline-block bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors">
+                    Liên hệ qua Facebook
+                </a>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer remains unchanged -->
+    <footer class="bg-gray-800 text-white py-8 animate-fadeIn">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; ImageToPDF.</p>
+            <p class="mt-2 text-gray-400">Được phát triển bởi Thanh Nam</p>
+        </div>
+    </footer>
 
     <div id="successNotification" class="animate-fadeIn">
         Chuyển đổi thành công!
