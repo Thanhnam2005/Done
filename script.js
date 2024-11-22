@@ -7,6 +7,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const downloadLink = document.getElementById('downloadLink');
     const successNotification = document.getElementById('successNotification');
     const removeBackgroundCheckbox = document.getElementById('removeBackground');
+    const orientationSelect = document.getElementById('orientation');
+    const pageSizeSelect = document.getElementById('pageSize');
+    const marginInputs = {
+        top: document.getElementById('marginTop'),
+        right: document.getElementById('marginRight'),
+        bottom: document.getElementById('marginBottom'),
+        left: document.getElementById('marginLeft')
+    };
+
+    const pageSizes = {
+        'a4': [210, 297],
+        'letter': [216, 279],
+        'legal': [216, 356]
+    };
 
     const myDropzone = new Dropzone("#upload-form", {
         url: "#",
@@ -55,9 +69,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     convertBtn.addEventListener('click', async function() {
         if (myDropzone.files.length > 0) {
-            const pdf = new jsPDF();
+            // Get selected options
+            const orientation = orientationSelect.value;
+            const pageSize = pageSizeSelect.value;
+            const margins = {
+                top: Number(marginInputs.top.value),
+                right: Number(marginInputs.right.value),
+                bottom: Number(marginInputs.bottom.value),
+                left: Number(marginInputs.left.value)
+            };
+
+            // Create PDF with selected orientation and size
+            const pdf = new jsPDF({
+                orientation: orientation,
+                unit: 'mm',
+                format: pageSize
+            });
+
+            // Get page dimensions
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            // Calculate usable area after margins
+            const usableWidth = pdfWidth - (margins.left + margins.right);
+            const usableHeight = pdfHeight - (margins.top + margins.bottom);
 
             for (let i = 0; i < myDropzone.files.length; i++) {
                 const file = myDropzone.files[i];
@@ -86,24 +121,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 img.src = imgData;
                 await new Promise(resolve => img.onload = resolve);
 
-                // Calculate scaling factor to fit within page while maintaining aspect ratio
+                // Calculate scaling factor to fit within usable area while maintaining aspect ratio
                 const imgAspectRatio = img.width / img.height;
-                const pageAspectRatio = pdfWidth / pdfHeight;
+                const pageAspectRatio = usableWidth / usableHeight;
 
                 let imgWidth, imgHeight, x, y;
 
                 if (imgAspectRatio > pageAspectRatio) {
                     // Image is wider than the page (relative to their heights)
-                    imgWidth = pdfWidth;
-                    imgHeight = pdfWidth / imgAspectRatio;
-                    x = 0;
-                    y = (pdfHeight - imgHeight) / 2;
+                    imgWidth = usableWidth;
+                    imgHeight = usableWidth / imgAspectRatio;
+                    x = margins.left;
+                    y = margins.top + (usableHeight - imgHeight) / 2;
                 } else {
                     // Image is taller than the page (relative to their widths)
-                    imgHeight = pdfHeight;
-                    imgWidth = pdfHeight * imgAspectRatio;
-                    x = (pdfWidth - imgWidth) / 2;
-                    y = 0;
+                    imgHeight = usableHeight;
+                    imgWidth = usableHeight * imgAspectRatio;
+                    x = margins.left + (usableWidth - imgWidth) / 2;
+                    y = margins.top;
                 }
 
                 // Add image to PDF
