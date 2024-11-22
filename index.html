@@ -43,7 +43,6 @@
             top: -10px;
             right: -10px;
             z-index: 10;
-            font-size: 18px;
             cursor: pointer;
             background-color: #EF4444;
             color: white;
@@ -58,6 +57,10 @@
         .dz-remove:hover {
             background-color: #DC2626;
         }
+        .dz-remove svg {
+            width: 14px;
+            height: 14px;
+        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -66,11 +69,30 @@
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+        @keyframes slideInFromTop {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
         .animate-fadeIn {
             animation: fadeIn 0.5s ease-in-out;
         }
         .animate-slideInFromBottom {
             animation: slideInFromBottom 0.5s ease-out;
+        }
+        .animate-slideInFromTop {
+            animation: slideInFromTop 0.5s ease-out;
+        }
+        #successNotification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #10B981;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
         }
     </style>
 </head>
@@ -131,6 +153,10 @@
         </div>
     </footer>
 
+    <div id="successNotification" class="animate-slideInFromTop">
+        Chuyển đổi thành công!
+    </div>
+
     <script>
         // Ensure jsPDF is available globally
         window.jsPDF = window.jspdf.jsPDF;
@@ -142,12 +168,14 @@
             const convertBtn = document.getElementById('convertBtn');
             const pdfDownload = document.getElementById('pdfDownload');
             const downloadLink = document.getElementById('downloadLink');
+            const successNotification = document.getElementById('successNotification');
 
             let myDropzone = new Dropzone("#upload-form", {
                 url: "#",
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 acceptedFiles: "image/*",
+                dictRemoveFile: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>',
                 init: function() {
                     this.on("addedfile", function(file) {
                         convertBtn.classList.remove('hidden');
@@ -188,6 +216,12 @@
                     downloadLink.href = pdfUrl;
                     pdfDownload.classList.remove('hidden');
                     pdfDownload.classList.add('animate-fadeIn');
+
+                    // Show success notification
+                    successNotification.style.display = 'block';
+                    setTimeout(() => {
+                        successNotification.style.display = 'none';
+                    }, 3000);
                 }
             });
         });
