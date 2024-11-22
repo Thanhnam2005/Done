@@ -86,16 +86,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 img.src = imgData;
                 await new Promise(resolve => img.onload = resolve);
 
-                // Calculate scaling factor to fit within page
-                const scale = Math.min(pdfWidth / img.width, pdfHeight / img.height);
+                // Calculate scaling factor to fit within page while maintaining aspect ratio
+                const imgAspectRatio = img.width / img.height;
+                const pageAspectRatio = pdfWidth / pdfHeight;
 
-                // Calculate dimensions of the image in the PDF
-                const imgWidth = img.width * scale;
-                const imgHeight = img.height * scale;
+                let imgWidth, imgHeight, x, y;
 
-                // Calculate position to center the image on the page
-                const x = (pdfWidth - imgWidth) / 2;
-                const y = (pdfHeight - imgHeight) / 2;
+                if (imgAspectRatio > pageAspectRatio) {
+                    // Image is wider than the page (relative to their heights)
+                    imgWidth = pdfWidth;
+                    imgHeight = pdfWidth / imgAspectRatio;
+                    x = 0;
+                    y = (pdfHeight - imgHeight) / 2;
+                } else {
+                    // Image is taller than the page (relative to their widths)
+                    imgHeight = pdfHeight;
+                    imgWidth = pdfHeight * imgAspectRatio;
+                    x = (pdfWidth - imgWidth) / 2;
+                    y = 0;
+                }
 
                 // Add image to PDF
                 pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
