@@ -1,19 +1,19 @@
-import { Button } from "@/components/ui/button"
-import { Download } from 'lucide-react'
-
 interface ThuocTinhTaiXuongPDF {
   urlPDF: string
 }
 
 export function TaiXuongPDF({ urlPDF }: ThuocTinhTaiXuongPDF) {
   return (
-    <div className="mt-6">
-      <h3 className="text-lg font-semibold mb-2">PDF của bạn đã sẵn sàng!</h3>
-      <Button asChild className="w-full">
-        <a href={urlPDF} download="anh-da-chuyen-doi.pdf">
-          <Download className="mr-2 h-4 w-4" /> Tải xuống PDF
-        </a>
-      </Button>
+    <div className="pdf-download">
+      <h3>PDF của bạn đã sẵn sàng!</h3>
+      <a href={urlPDF} download="anh-da-chuyen-doi.pdf" className="btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="download-icon">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Tải xuống PDF
+      </a>
     </div>
   )
 }
