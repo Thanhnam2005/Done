@@ -1,3 +1,5 @@
+'use client'
+
 import ChuyenDoiAnhSangPDF from '@/components/chuyen-doi-anh-sang-pdf'
 import { motion } from 'framer-motion'
 

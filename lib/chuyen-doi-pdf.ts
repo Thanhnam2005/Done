@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf'
 
 export async function chuyenDoiAnhSangPdf(danhSachAnh: File[]): Promise<Blob> {
   const pdf = new jsPDF()
-  
+
   for (let i = 0; i < danhSachAnh.length; i++) {
     const anh = danhSachAnh[i]
     const duLieuAnh = await docTepDangDataURL(anh)
@@ -16,7 +16,7 @@ export async function chuyenDoiAnhSangPdf(danhSachAnh: File[]): Promise<Blob> {
     
     pdf.addImage(duLieuAnh, 'JPEG', 0, 0, chieuRongPDF, chieuCaoPDF)
   }
-  
+
   return pdf.output('blob')
 }
 
